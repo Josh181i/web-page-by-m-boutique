@@ -2056,14 +2056,14 @@
             }, 2000);
         });
 
-        function initializeApp() {
+        async function initializeApp() {
             console.log('🚀 INICIANDO APLICACIÓN...');
             
             // Inicializar Firebase Auth
             initializeFirebaseAuth();
             
             // Cargar datos guardados
-            loadAppData();
+            await loadAppData();
             
             // Renderizar contenido
             renderCategories();
@@ -2175,7 +2175,7 @@
                 });
             });
 
-            // EVENTO GLOBAL PARA BOTONES "VER COLECCIÓN"
+            // EVENTO GLOBAL PARA BOTONES "VER COLECCIÓN" - CORREGIDO
             document.addEventListener('click', function(e) {
                 const viewCollectionBtn = e.target.closest('.btn-view');
                 if (viewCollectionBtn) {
@@ -2197,6 +2197,20 @@
                     console.log('🔍 Botón VER DETALLES clickeado:', productId);
                     if (productId) {
                         openProductModal(productId);
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+
+            // EVENTO GLOBAL PARA ENLACES DE COLECCIONES EN FOOTER - CORREGIDO
+            document.addEventListener('click', function(e) {
+                const footerCollectionLink = e.target.closest('.footer-collections a');
+                if (footerCollectionLink) {
+                    const categoryId = footerCollectionLink.getAttribute('data-category');
+                    console.log('📂 Enlace de colección clickeado:', categoryId);
+                    if (categoryId) {
+                        showCategoryPage(categoryId);
                     }
                     e.preventDefault();
                     e.stopPropagation();
@@ -2236,6 +2250,7 @@
                 showPage(pageId);
             } else {
                 console.warn('❌ Página de categoría no encontrada:', pageId);
+                // Si no existe la página, mostrar la categoría joyería por defecto
                 showPage('joyeria-page');
             }
         }
@@ -2389,7 +2404,7 @@
 
             appData.categories.forEach(category => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `<a class="nav-categorias" data-category="${category.id}">${category.title}</a>`;
+                listItem.innerHTML = `<a class="footer-collections" data-category="${category.id}">${category.title}</a>`;
                 container.appendChild(listItem);
             });
         }
@@ -3306,7 +3321,7 @@
                 }
             });
 
-            console.log('✅ PANEL ADMIN INICIALIZADOo');
+            console.log('✅ PANEL ADMIN INICIALIZADO');
         }
     </script>
 </body>
